@@ -49,14 +49,7 @@ public class InputView {
     public BridgeGameStatus readGameCommand() {
         OutputView.printGuideMessage("게임을 다시 시도할지 여부를 입력해주세요. (재시도: R, 종료: Q)");
         String playerInput = Console.readLine();
-        this.validateGameStatus(playerInput);
         return getGameStatus(playerInput);
-    }
-
-    private void validateGameStatus(String playerInput) {
-        if (isValidStatus(playerInput)) {
-            throw new IllegalArgumentException("게임의 재시도 여부가 올바르지 않습니다. 사용자의 입력: " + playerInput);
-        }
     }
 
     private static boolean isValidStatus(String playerInput) {
@@ -68,6 +61,6 @@ public class InputView {
         return Arrays.stream(BridgeGameStatus.values())
                 .filter((gameStatus) -> gameStatus.isMatch(playerInput))
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("게임의 재시도 여부가 올바르지 않습니다. 사용자의 입력: " + playerInput));
     }
 }
