@@ -1,7 +1,6 @@
 package bridge.domain;
 
 public enum MoveDirection {
-    START(""),
     UP("U"),
     DOWN("D");
 

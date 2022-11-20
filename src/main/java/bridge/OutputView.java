@@ -48,6 +48,7 @@ public class OutputView {
     private static String getPlayerChoice(BridgeGame bridgeGame) {
         return bridgeGame.getPlayer()
                 .getLastMovementChoice()
+                .get()
                 .getDirection();
     }
 
@@ -60,29 +61,23 @@ public class OutputView {
     }
 
     private static void printPreviousCell(String actual, MoveDirection moveDirection) {
-        printCell(actual, actual, moveDirection);
+        if (Objects.equals(actual, moveDirection.getDirection())) {
+            System.out.print(MOVE_MARKER);
+            return;
+        }
+        System.out.print(NO_MOVE_MARKER);
     }
 
     private static void printCurrentCell(String playerChoice, String actual, MoveDirection moveDirection) {
-        printCell(playerChoice, actual, moveDirection);
-    }
-
-    private static void printCell(String playerChoice, String actual, MoveDirection moveDirection) {
-        System.out.print(getCellStatus(playerChoice, actual, moveDirection));
-    }
-
-    private static String getCellStatus(String playerChoice, String correctChoice, MoveDirection printDirection) {
-        if (isCurrentPrintDirection(correctChoice, printDirection)) {
-            if (!Objects.equals(playerChoice, correctChoice)) {
-                return WRONG_MOVE_MARKER;
+        if (Objects.equals(playerChoice, moveDirection.getDirection())) {
+            if (!Objects.equals(playerChoice, actual)) {
+                System.out.print(WRONG_MOVE_MARKER);
+                return;
             }
-            return MOVE_MARKER;
+            System.out.print(MOVE_MARKER);
+            return;
         }
-        return NO_MOVE_MARKER;
-    }
-
-    private static boolean isCurrentPrintDirection(String actual, MoveDirection moveDirection) {
-        return Objects.equals(actual, moveDirection.getDirection());
+        System.out.print(NO_MOVE_MARKER);
     }
 
     private static void printEmptyLine() {

@@ -1,6 +1,8 @@
 
 package bridge.domain;
 
+import java.util.Optional;
+
 public class Player {
 
     private int currentPosition = 0;
@@ -8,7 +10,7 @@ public class Player {
     private MoveDirection lastMovementChoice;
 
     public Player() {
-        this.lastMovementChoice = MoveDirection.START;
+        this.lastMovementChoice = null;
     }
 
     public void moveForward() {
@@ -31,8 +33,8 @@ public class Player {
         return this.tryCount;
     }
 
-    public MoveDirection getLastMovementChoice() {
-        return this.lastMovementChoice;
+    public Optional<MoveDirection> getLastMovementChoice() {
+        return Optional.ofNullable(this.lastMovementChoice);
     }
 
     public void initCurrentPosition() {

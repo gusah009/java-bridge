@@ -34,8 +34,17 @@ public class BridgeGame {
 
     private boolean isPlayerCorrectSelected() {
         String actualBridge = bridge.get(player.getCurrentPosition() - 1);
-        String playerSelected = player.getLastMovementChoice().getDirection();
+        String playerSelected = getPlayerSelected();
         return Objects.equals(actualBridge, playerSelected);
+    }
+
+    private String getPlayerSelected() {
+        if (player.getLastMovementChoice().isPresent()) {
+            return player.getLastMovementChoice()
+                    .get()
+                    .getDirection();
+        }
+        return "";
     }
 
     private boolean isEndOfBridge() {
