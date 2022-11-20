@@ -1,5 +1,8 @@
 package bridge;
 
+import static bridge.domain.MoveDirection.DOWN;
+import static bridge.domain.MoveDirection.UP;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +16,7 @@ public class BridgeMaker {
 
     public List<String> makeBridge(int size) {
         this.checkBridgeSize(size);
-        List<String> newBridge = new ArrayList();
+        List<String> newBridge = new ArrayList<>();
         for (int i = 0; i < size; ++i) {
             newBridge.add(this.getPossibleDirection());
         }
@@ -27,6 +30,9 @@ public class BridgeMaker {
     }
 
     private String getPossibleDirection() {
-        return this.bridgeNumberGenerator.generate() == 1 ? "U" : "D";
+        if (this.bridgeNumberGenerator.generate() == 1) {
+            return UP.getDirection();
+        }
+        return DOWN.getDirection();
     }
 }
