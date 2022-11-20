@@ -7,6 +7,12 @@ import java.util.Objects;
 
 public class OutputView {
 
+    private final static String MOVE_MARKER = "O";
+    private final static String WRONG_MOVE_MARKER = "X";
+    private final static String NO_MOVE_MARKER = " ";
+    private final static String MARKER_DELIMITER = " | ";
+    private final static String START_LINE = "[ ";
+    private final static String END_LINE = " ]";
     private static final String ERROR_PREFIX = "[ERROR] ";
 
     public OutputView() {
@@ -20,45 +26,65 @@ public class OutputView {
 
     private static void printBridgeLine(BridgeGame bridgeGame, MoveDirection moveDirection) {
         printStartLine();
-        printPreviousCells(bridgeGame, moveDirection);
-        printCurrentCell(bridgeGame, moveDirection);
+        printCells(bridgeGame, moveDirection);
         printEndLine();
     }
 
     private static void printStartLine() {
-        System.out.print("[");
+        System.out.print(START_LINE);
     }
 
     private static void printEndLine() {
-        System.out.println("]");
+        System.out.println(END_LINE);
     }
 
-    private static void printPreviousCells(BridgeGame bridgeGame, MoveDirection moveDirection) {
-        for (int i = 0; i < bridgeGame.getPlayer().getCurrentPosition() - 1; ++i) {
-            printPreviousCell(bridgeGame.getBridge(), moveDirection, i);
+    private static void printCells(BridgeGame bridgeGame, MoveDirection moveDirection) {
+        int currentPosition = bridgeGame.getPlayer().getCurrentPosition() - 1;
+        for (int i = 0; i < currentPosition; ++i) {
+            printPreviousCell(getActual(bridgeGame, i), moveDirection);
+            printDelimiter();
         }
-
+        printCurrentCell(getPlayerChoice(bridgeGame), getActual(bridgeGame, currentPosition), moveDirection);
     }
 
-    private static void printPreviousCell(List<String> bridge, MoveDirection moveDirection, int printPosition) {
-        if (Objects.equals(bridge.get(printPosition), moveDirection.getDirection())) {
-            System.out.print(" O |");
-            return;
-        }
-        System.out.print("   |");
+    private static String getPlayerChoice(BridgeGame bridgeGame) {
+        return bridgeGame.getPlayer()
+                .getLastMovementChoice()
+                .getDirection();
     }
 
-    private static void printCurrentCell(BridgeGame bridgeGame, MoveDirection moveDirection) {
-        if (bridgeGame.getPlayer().getLastMovementChoice() == moveDirection) {
-            if (Objects.equals(bridgeGame.getBridge().get(bridgeGame.getPlayer().getCurrentPosition() - 1),
-                    moveDirection.getDirection())) {
-                System.out.print(" O ");
-                return;
+    private static String getActual(BridgeGame bridgeGame, int i) {
+        return bridgeGame.getBridge().get(i);
+    }
+
+    private static void printDelimiter() {
+        System.out.print(MARKER_DELIMITER);
+    }
+
+    private static void printPreviousCell(String actual, MoveDirection moveDirection) {
+        printCell(actual, actual, moveDirection);
+    }
+
+    private static void printCurrentCell(String playerChoice, String actual, MoveDirection moveDirection) {
+        printCell(playerChoice, actual, moveDirection);
+    }
+
+    private static void printCell(String playerChoice, String actual, MoveDirection moveDirection) {
+        System.out.print(getCellStatus(playerChoice, actual, moveDirection));
+    }
+
+    private static String getCellStatus(String playerChoice, String correctChoice, MoveDirection printDirection) {
+        if (isCurrentPrintDirection(correctChoice, printDirection)) {
+            if (!Objects.equals(playerChoice, correctChoice)) {
+                return WRONG_MOVE_MARKER;
             }
-            System.out.print(" X ");
-            return;
+            return MOVE_MARKER;
         }
-        System.out.print("   ");
+        return NO_MOVE_MARKER;
+    }
+
+    private static boolean isCurrentPrintDirection(String actual, MoveDirection moveDirection) {
+        return Objects.equals(actual, moveDirection.getDirection());
     }
 
     private static void printEmptyLine() {
