@@ -12,15 +12,16 @@ public class OutputView {
     public OutputView() {
     }
 
-    public void printMap(List<String> bridge, Player player) {
-        printBridgeLine(bridge, player, MoveDirection.UP);
-        printBridgeLine(bridge, player, MoveDirection.DOWN);
+    public void printMap(BridgeGame bridgeGame) {
+        printBridgeLine(bridgeGame, MoveDirection.UP);
+        printBridgeLine(bridgeGame, MoveDirection.DOWN);
+        printEmptyLine();
     }
 
-    private static void printBridgeLine(List<String> bridge, Player player, MoveDirection moveDirection) {
+    private static void printBridgeLine(BridgeGame bridgeGame, MoveDirection moveDirection) {
         printStartLine();
-        printPreviousCells(bridge, player, moveDirection);
-        printCurrentCell(bridge, player, moveDirection);
+        printPreviousCells(bridgeGame, moveDirection);
+        printCurrentCell(bridgeGame, moveDirection);
         printEndLine();
     }
 
@@ -32,9 +33,9 @@ public class OutputView {
         System.out.println("]");
     }
 
-    private static void printPreviousCells(List<String> bridge, Player player, MoveDirection moveDirection) {
-        for (int i = 0; i < player.getCurrentPosition(); ++i) {
-            printPreviousCell(bridge, moveDirection, i);
+    private static void printPreviousCells(BridgeGame bridgeGame, MoveDirection moveDirection) {
+        for (int i = 0; i < bridgeGame.getPlayer().getCurrentPosition() - 1; ++i) {
+            printPreviousCell(bridgeGame.getBridge(), moveDirection, i);
         }
 
     }
@@ -47,9 +48,10 @@ public class OutputView {
         System.out.print("   |");
     }
 
-    private static void printCurrentCell(List<String> bridge, Player player, MoveDirection moveDirection) {
-        if (player.getLastMovementChoice() == moveDirection) {
-            if (Objects.equals(bridge.get(player.getCurrentPosition()), moveDirection.getDirection())) {
+    private static void printCurrentCell(BridgeGame bridgeGame, MoveDirection moveDirection) {
+        if (bridgeGame.getPlayer().getLastMovementChoice() == moveDirection) {
+            if (Objects.equals(bridgeGame.getBridge().get(bridgeGame.getPlayer().getCurrentPosition() - 1),
+                    moveDirection.getDirection())) {
                 System.out.print(" O ");
                 return;
             }
@@ -59,11 +61,15 @@ public class OutputView {
         System.out.print("   ");
     }
 
-    public void printResult(List<String> bridge, Player player) {
+    private static void printEmptyLine() {
+        System.out.println();
+    }
+
+    public void printResult(BridgeGame bridgeGame) {
         System.out.println("최종 게임 결과");
-        this.printMap(bridge, player);
-        System.out.println("게임 성공 여부: " + getGameEndStatus(bridge, player));
-        System.out.println("총 시도한 횟수: " + player.getTryCount());
+        this.printMap(bridgeGame);
+        System.out.println("게임 성공 여부: " + getGameEndStatus(bridgeGame.getBridge(), bridgeGame.getPlayer()));
+        System.out.println("총 시도한 횟수: " + bridgeGame.getPlayer().getTryCount());
     }
 
     private String getGameEndStatus(List<String> bridge, Player player) {
@@ -71,13 +77,13 @@ public class OutputView {
     }
 
     private boolean isPlayerCorrectSelected(List<String> bridge, Player player) {
-        String actualBridge = bridge.get(player.getCurrentPosition());
+        String actualBridge = bridge.get(player.getCurrentPosition() - 1);
         String playerSelected = player.getLastMovementChoice().getDirection();
         return Objects.equals(actualBridge, playerSelected);
     }
 
     private boolean isEndOfBridge(List<String> bridge, Player player) {
-        return player.getCurrentPosition() == bridge.size() - 1;
+        return player.getCurrentPosition() == bridge.size();
     }
 
     public static void printGuideMessage(String message) {

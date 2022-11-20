@@ -9,53 +9,57 @@ import java.util.Objects;
 public class BridgeGame {
 
     private final List<String> bridge;
-    private final InputView inputView = new InputView();
-    private final OutputView outputView = new OutputView();
     private final Player player;
 
-    public BridgeGame(BridgeMaker bridgeMaker) {
-        int bridgeSize = this.inputView.readBridgeSize();
+    private boolean isEnd = false;
+
+    public BridgeGame(BridgeMaker bridgeMaker, int bridgeSize) {
         this.bridge = bridgeMaker.makeBridge(bridgeSize);
         this.player = new Player();
         OutputView.printGuideMessage("다리 건너기 게임을 시작합니다.");
     }
 
-    public boolean move() {
-        MoveDirection inputDirection = this.inputView.readMoving();
-        this.player.setLastMovementChoice(inputDirection);
-        this.outputView.printMap(this.bridge, this.player);
-        if (this.canMove()) {
-            this.player.moveForward();
-            return true;
+    public boolean move(MoveDirection inputDirection) {
+        player.setLastMovementChoice(inputDirection);
+        player.moveForward();
+        if (isEndOfBridge() && isPlayerCorrectSelected()) {
+            isEnd = true;
         }
-        return false;
+        return canMove();
     }
 
     private boolean canMove() {
-        return this.isPlayerCorrectSelected() && !this.isEndOfBridge();
+        return !isEndOfBridge() && isPlayerCorrectSelected();
     }
 
     private boolean isPlayerCorrectSelected() {
-        String actualBridge = this.bridge.get(this.player.getCurrentPosition());
-        String playerSelected = this.player.getLastMovementChoice().getDirection();
+        String actualBridge = bridge.get(player.getCurrentPosition() - 1);
+        String playerSelected = player.getLastMovementChoice().getDirection();
         return Objects.equals(actualBridge, playerSelected);
     }
 
     private boolean isEndOfBridge() {
-        return this.player.getCurrentPosition() == this.bridge.size() - 1;
+        return player.getCurrentPosition() == bridge.size();
     }
 
-    public boolean retry() {
-        if (this.isEndOfBridge() && this.isPlayerCorrectSelected()) {
-            this.outputView.printResult(this.bridge, this.player);
-            return false;
-        }
-        if (this.inputView.readGameCommand() == BridgeGameStatus.RESTART) {
-            this.player.plusRetryCount();
-            this.player.initCurrentPosition();
+    public boolean retry(BridgeGameStatus playerInputCommand) {
+        if (playerInputCommand == BridgeGameStatus.RESTART) {
+            player.plusRetryCount();
+            player.initCurrentPosition();
             return true;
         }
-        this.outputView.printResult(this.bridge, this.player);
         return false;
+    }
+
+    public boolean isEnd() {
+        return isEnd;
+    }
+
+    public List<String> getBridge() {
+        return bridge;
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 }
