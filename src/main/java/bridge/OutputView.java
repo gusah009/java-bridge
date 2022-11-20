@@ -1,8 +1,6 @@
 package bridge;
 
 import bridge.domain.MoveDirection;
-import bridge.domain.Player;
-import java.util.List;
 import java.util.Objects;
 
 public class OutputView {
@@ -94,22 +92,15 @@ public class OutputView {
     public void printResult(BridgeGame bridgeGame) {
         System.out.println("최종 게임 결과");
         this.printMap(bridgeGame);
-        System.out.println("게임 성공 여부: " + getGameEndStatus(bridgeGame.getBridge(), bridgeGame.getPlayer()));
+        System.out.println("게임 성공 여부: " + getGameEndStatus(bridgeGame.isEnd()));
         System.out.println("총 시도한 횟수: " + bridgeGame.getPlayer().getTryCount());
     }
 
-    private String getGameEndStatus(List<String> bridge, Player player) {
-        return this.isEndOfBridge(bridge, player) && this.isPlayerCorrectSelected(bridge, player) ? "성공" : "실패";
-    }
-
-    private boolean isPlayerCorrectSelected(List<String> bridge, Player player) {
-        String actualBridge = bridge.get(player.getCurrentPosition() - 1);
-        String playerSelected = player.getLastMovementChoice().getDirection();
-        return Objects.equals(actualBridge, playerSelected);
-    }
-
-    private boolean isEndOfBridge(List<String> bridge, Player player) {
-        return player.getCurrentPosition() == bridge.size();
+    private String getGameEndStatus(boolean isEnd) {
+        if (isEnd) {
+            return "성공";
+        }
+        return "실패";
     }
 
     public static void printGuideMessage(String message) {
