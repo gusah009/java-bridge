@@ -24,37 +24,20 @@ public class InputView {
     public MoveDirection readMoving() {
         OutputView.printGuideMessage("이동할 칸을 선택해주세요. (위: U, 아래: D)");
         String playerInput = Console.readLine();
-        this.validateMoveDirection(playerInput);
         return getMoveDirection(playerInput);
-    }
-
-    private void validateMoveDirection(String playerInput) {
-        if (isInvalidDirection(playerInput)) {
-            throw new IllegalArgumentException("이동 방향이 올바르지 않습니다. 사용자의 입력: " + playerInput);
-        }
-    }
-
-    private static boolean isInvalidDirection(String playerInput) {
-        return Arrays.stream(MoveDirection.values())
-                .noneMatch((moveDirection) -> moveDirection.isMatch(playerInput));
     }
 
     private static MoveDirection getMoveDirection(String playerInput) {
         return Arrays.stream(MoveDirection.values())
                 .filter((direction) -> direction.isMatch(playerInput))
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("이동 방향이 올바르지 않습니다. 사용자의 입력: " + playerInput));
     }
 
     public BridgeGameStatus readGameCommand() {
         OutputView.printGuideMessage("게임을 다시 시도할지 여부를 입력해주세요. (재시도: R, 종료: Q)");
         String playerInput = Console.readLine();
         return getGameStatus(playerInput);
-    }
-
-    private static boolean isValidStatus(String playerInput) {
-        return Arrays.stream(BridgeGameStatus.values())
-                .noneMatch((gameStatus) -> gameStatus.isMatch(playerInput));
     }
 
     private static BridgeGameStatus getGameStatus(String playerInput) {
