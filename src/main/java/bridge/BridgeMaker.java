@@ -8,17 +8,13 @@ import java.util.List;
 
 public class BridgeMaker {
 
-    private final BridgeNumberGenerator bridgeNumberGenerator;
-
-    public BridgeMaker(BridgeNumberGenerator bridgeNumberGenerator) {
-        this.bridgeNumberGenerator = bridgeNumberGenerator;
-    }
+    private static final BridgeNumberGenerator bridgeNumberGenerator = new BridgeRandomNumberGenerator();
 
     public List<String> makeBridge(int size) {
-        this.checkBridgeSize(size);
+        checkBridgeSize(size);
         List<String> newBridge = new ArrayList<>();
         for (int i = 0; i < size; ++i) {
-            newBridge.add(this.getPossibleDirection());
+            newBridge.add(getPossibleDirection());
         }
         return newBridge;
     }
@@ -30,7 +26,7 @@ public class BridgeMaker {
     }
 
     private String getPossibleDirection() {
-        if (this.bridgeNumberGenerator.generate() == 1) {
+        if (bridgeNumberGenerator.generate() == 1) {
             return UP.getDirection();
         }
         return DOWN.getDirection();

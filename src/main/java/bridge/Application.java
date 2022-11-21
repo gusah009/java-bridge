@@ -15,7 +15,7 @@ public class Application {
     }
 
     private static void playBridgeGame() {
-        BridgeGame bridgeGame = new BridgeGame(new BridgeMaker(new BridgeRandomNumberGenerator()), getBridgeSize());
+        BridgeGame bridgeGame = new BridgeGame(new BridgeMaker(), getBridgeSize());
         do {
             moveUntilPossible(bridgeGame);
             if (bridgeGame.isEnd()) {
