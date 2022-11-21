@@ -104,5 +104,6 @@ public class OutputView {
 
     public static void printErrorMessage(String message) {
         System.out.println(ERROR_PREFIX + message);
+        printEmptyLine();
     }
 }
