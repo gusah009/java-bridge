@@ -69,15 +69,17 @@ public class OutputView {
     }
 
     private static void printCurrentCell(String playerChoice, String actual, MoveDirection moveDirection) {
+        System.out.print(getMoveMarker(playerChoice, actual, moveDirection));
+    }
+
+    private static String getMoveMarker(String playerChoice, String actual, MoveDirection moveDirection) {
         if (Objects.equals(playerChoice, moveDirection.getDirection())) {
             if (!Objects.equals(playerChoice, actual)) {
-                System.out.print(WRONG_MOVE_MARKER);
-                return;
+                return WRONG_MOVE_MARKER;
             }
-            System.out.print(MOVE_MARKER);
-            return;
+            return MOVE_MARKER;
         }
-        System.out.print(NO_MOVE_MARKER);
+        return NO_MOVE_MARKER;
     }
 
     private static void printEmptyLine() {
